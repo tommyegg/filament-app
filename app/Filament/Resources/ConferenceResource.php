@@ -25,17 +25,27 @@ class ConferenceResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('description')
-                    ->required()
-                    ->maxLength(255),
+                    ->default('my conference here')
+                    ->helperText('please input conference name')
+                    ->hint('here is the hint')
+                    ->maxLength(60),
+                Forms\Components\RichEditor::make('description')
+                    ->required(),
                 Forms\Components\DatePicker::make('start_date')
+                    ->native(false)
                     ->required(),
                 Forms\Components\DatePicker::make('end_date')
+                    ->native(false)
                     ->required(),
-                Forms\Components\TextInput::make('status')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Checkbox::make('is_published')
+                    ->default(true),
+                Forms\Components\Select::make('status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'published' => 'Published',
+                        'archived' => 'Archived',
+                    ])
+                    ->required(),
                 Forms\Components\TextInput::make('region')
                     ->required()
                     ->maxLength(255),
