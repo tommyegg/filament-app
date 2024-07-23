@@ -24,50 +24,9 @@ class ConferenceResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->default('my conference here')
-                    ->helperText('please input conference name')
-                    ->hint('here is the hint')
-                    ->maxLength(60),
-                Forms\Components\RichEditor::make('description')
-                    ->required(),
-                Forms\Components\DatePicker::make('start_date')
-                    ->native(false)
-                    ->required(),
-                Forms\Components\DatePicker::make('end_date')
-                    ->native(false)
-                    ->required(),
-                Forms\Components\Checkbox::make('is_published')
-                    ->default(true),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'draft' => 'Draft',
-                        'published' => 'Published',
-                        'archived' => 'Archived',
-                    ])
-                    ->required(),
-                Forms\Components\Select::make('region')
-                    ->enum(Region::class)
-                    ->live()
-                    ->options(Region::class),
-                Forms\Components\Select::make('venue_id')
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm(Venue::getForm())
-                    ->editOptionForm(Venue::getForm())
-                    ->relationship('venue', 'name', function (Builder $query, Forms\Get $get) {
-                        return $query->where('region', $get('region'));
-                    }),
-                Forms\Components\CheckboxList::make('speakers')
-                    ->relationship('speakers', 'name')
-                    ->columnSpanFull()
-                    ->options(
-                        Speaker::all()->pluck('name', 'id')
-                    )
-                    ->required(),
-            ]);
+            ->schema(
+                Conference::getForm(),
+            );
     }
 
     public static function table(Table $table): Table
