@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\TalkLength;
+use App\Enums\TalkStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('abstract');
-            $table->foreignId('speaker_id');
+            $table->string('length')->default(TalkLength::NORMAL);
+            $table->foreignId('speaker_id')->default(TalkStatus::SUBMITTED);
             $table->timestamps();
         });
     }
