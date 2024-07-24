@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Enums\TalkLength;
 use App\Filament\Resources\TalkResource\Pages;
-use App\Filament\Resources\TalkResource\RelationManagers;
 use App\Models\Talk;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,8 +12,6 @@ use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
 
 class TalkResource extends Resource
 {
