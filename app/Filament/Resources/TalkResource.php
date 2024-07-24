@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -40,6 +41,10 @@ class TalkResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->persistFiltersInSession()
+            ->filtersTriggerAction(function ($action){
+                return $action->button()->label('Filters');
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->sortable()
@@ -57,21 +62,35 @@ class TalkResource extends Resource
                 Tables\Columns\ToggleColumn::make('new_talk'),
                 Tables\Columns\TextColumn::make('status')
                     ->sortable()
-                    ->color(function ($state){
+                    ->color(function ($state) {
                         return $state->getColor();
                     })
                     ->badge(),
                 Tables\Columns\IconColumn::make('length')
-                ->icon(function($state) {
-                    return match ($state) {
-                        TalkLength::NORMAL => 'heroicon-o-megaphone',
-                        TalkLength::LIGHTNING => 'heroicon-o-bolt',
-                        TalkLength::KEYNOTE => 'heroicon-o-key',
-                    };
-                }),
+                    ->icon(function ($state) {
+                        return match ($state) {
+                            TalkLength::NORMAL => 'heroicon-o-megaphone',
+                            TalkLength::LIGHTNING => 'heroicon-o-bolt',
+                            TalkLength::KEYNOTE => 'heroicon-o-key',
+                        };
+                    }),
             ])
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('new_talk'),
+                SelectFilter::make('speaker')
+                    ->relationship('speaker', 'name')
+                    ->multiple()
+                    ->searchable()
+                    ->preload(),
+                Tables\Filters\Filter::make('has_avatar')
+                    ->label('Show only talks with speaker avatar')
+                    ->toggle()
+                    ->query(function (Builder $query) {
+                        return $query->whereHas('speaker', function (Builder $query) {
+                            $query->whereNotNull('avatar');
+                        });
+                    }),
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
