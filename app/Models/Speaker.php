@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,6 +30,11 @@ class Speaker extends Model
             TextInput::make('name')
                 ->required()
                 ->maxLength(255),
+            FileUpload::make('avatar')
+                ->image()
+                ->avatar()
+                ->imageEditor()
+                ->maxSize(1024 * 1024 * 10),
             TextInput::make('email')
                 ->email()
                 ->required()
